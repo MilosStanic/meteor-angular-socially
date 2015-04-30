@@ -17,12 +17,14 @@ angular.module("socially").config(['$urlRouterProvider', '$stateProvider', '$loc
       .state('parties', {
         url: '/parties',
         templateUrl: 'client/parties/views/parties-list.ng.html',
-        controller: 'PartiesListCtrl'
+        controller: 'PartiesListCtrl', 
+        controllerAs: 'plc'
       })
       .state('partyDetails', {
         url: '/parties/:partyId',
         templateUrl: 'client/parties/views/party-details.ng.html',
         controller: 'PartyDetailsCtrl',
+        controllerAs: 'pdc',
         resolve: {
           "currentUser": ["$meteor", function($meteor){
             return $meteor.requireUser();

@@ -1,34 +1,36 @@
 angular.module("socially").controller("PartiesListCtrl", ['$scope', '$meteor', '$rootScope', '$state',
   function($scope, $meteor, $rootScope, $state){
 
-    $scope.page = 1;
-    $scope.perPage = 3;
-    $scope.sort = { name: 1 };
-    $scope.orderProperty = '1';
+    var vm = this;
 
-    $scope.users = $meteor.collection(Meteor.users, false).subscribe('users');
+    vm.page = 1;
+    vm.perPage = 3;
+    vm.sort = { name: 1 };
+    vm.orderProperty = '1';
     
-    $scope.parties = $meteor.collection(function() {
+    vm.users = $meteor.collection(Meteor.users, false).subscribe('users');
+    
+    vm.parties = $meteor.collection(function() {
       return Parties.find({}, {
-        sort : $scope.getReactively('sort')
+        sort : $scope.getReactively('vm.sort')
       });
     });
 
     $meteor.autorun($scope, function() {
       $meteor.subscribe('parties', {
-        limit: parseInt($scope.getReactively('perPage')),
-        skip: (parseInt($scope.getReactively('page')) - 1) * parseInt($scope.getReactively('perPage')),
-        sort: $scope.getReactively('sort')
-      }, $scope.getReactively('search')).then(function() {
-        $scope.partiesCount = $meteor.object(Counts ,'numberOfParties', false);
+        limit: parseInt($scope.getReactively('vm.perPage')),
+        skip: (parseInt($scope.getReactively('vm.page')) - 1) * parseInt($scope.getReactively('vm.perPage')),
+        sort: $scope.getReactively('vm.sort')
+      }, $scope.getReactively('vm.search')).then(function() {
+        vm.partiesCount = $meteor.object(Counts ,'numberOfParties', false);
 
-        $scope.parties.forEach( function (party) {
+        vm.parties.forEach( function (party) {
           party.onClicked = function () {
             $state.go('partyDetails', {partyId: party._id});
           };
         });
 
-        $scope.map = {
+        vm.map = {
           center: {
             latitude: 45,
             longitude: -73
@@ -38,27 +40,27 @@ angular.module("socially").controller("PartiesListCtrl", ['$scope', '$meteor', '
       });
     });
 
-    $scope.remove = function(party){
-      $scope.parties.splice( $scope.parties.indexOf(party), 1 );
+    vm.remove = function(party){
+      vm.parties.splice( vm.parties.indexOf(party), 1 );
     };
 
-    $scope.pageChanged = function(newPage) {
-      $scope.page = newPage;
+    vm.pageChanged = function(newPage) {
+      vm.page = newPage;
     };
 
-    $scope.$watch('orderProperty', function(){
-      if ($scope.orderProperty)
-        $scope.sort = {name: parseInt($scope.orderProperty)};
+    $scope.$watch('vm.orderProperty', function(){
+      if (vm.orderProperty)
+        vm.sort = {name: parseInt(vm.orderProperty)};
     });
 
-    $scope.getUserById = function(userId){
+    vm.getUserById = function(userId){
       return Meteor.users.findOne(userId);
     };
 
-    $scope.creator = function(party){
+    vm.creator = function(party){
       if (!party)
         return;
-      var owner = $scope.getUserById(party.owner);
+      var owner = vm.getUserById(party.owner);
       if (!owner)
         return "nobody";
 
@@ -70,7 +72,7 @@ angular.module("socially").controller("PartiesListCtrl", ['$scope', '$meteor', '
       return owner;
     };
 
-    $scope.rsvp = function(partyId, rsvp){
+    vm.rsvp = function(partyId, rsvp){
       $meteor.call('rsvp', partyId, rsvp).then(
         function(data){
           console.log('success responding', data);

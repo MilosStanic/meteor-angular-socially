@@ -4,31 +4,31 @@
 <form class="form-inline">
   <div class="form-group">
     <label>Party Name</label>
-    <input ng-model="party.name" ng-disabled="party.owner != $root.currentUser._id" type="text" class="form-control">
+    <input ng-model="pdc.party.name" ng-disabled="pdc.party.owner != $root.currentUser._id" type="text" class="form-control">
   </div>
   <div class="form-group">
-    <label>Party Name</label>
-    <input ng-model="party.description" ng-disabled="party.owner != $root.currentUser._id" type="text" class="form-control">
+    <label>Party Description</label>
+    <input ng-model="pdc.party.description" ng-disabled="pdc.party.owner != $root.currentUser._id" type="text" class="form-control">
   </div>
   <div class="form-group">
     <label>Is public</label>
-    <input type="checkbox" ng-model="party.public" ng-disabled="party.owner != $root.currentUser._id">
+    <input type="checkbox" ng-model="pdc.party.public" ng-disabled="pdc.party.owner != $root.currentUser._id">
   </div>
-
-  <ul ng-show="canInvite()">
+  
+  <ul ng-show="pdc.canInvite()">
     Users to invite:
-    <li ng-repeat="user in users | uninvited:party">
+    <li ng-repeat="user in pdc.users | uninvited:pdc.party">
       <div>{{ user | displayName }}</div>
       <button ng-click="invite(user)">Invite</button>
     </li>
-    <li ng-if="(users | uninvited:party).length <= 0">
+    <li ng-if="(pdc.users | uninvited:pdc.party).length <= 0">
       Everyone are already invited.
     </li>
   </ul>
 
   <div class="angular-google-map-container">
-    <ui-gmap-google-map center="map.center" events="map.events" zoom="map.zoom">
-      <ui-gmap-marker coords="party.location" options="map.marker.options" events="map.marker.events" idkey="party._id">
+    <ui-gmap-google-map center="pdc.map.center" events="pdc.map.events" zoom="pdc.map.zoom">
+      <ui-gmap-marker coords="pdc.party.location" options="pdc.map.marker.options" events="pdc.map.marker.events" idkey="pdc.party._id">
       </ui-gmap-marker>
     </ui-gmap-google-map>
   </div>
